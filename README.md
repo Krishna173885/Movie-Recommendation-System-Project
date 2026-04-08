@@ -36,4 +36,5 @@ A Content-Based Movie Recommender System that suggests movies similar to user pr
 ## 📸 Project Screenshot
 ![Project Screenshot](static/proof.png)
 
----
+---<img width="1918" height="886" alt="proof" src="https://github.com/user-attachments/assets/70302807-bd5c-428f-9bd6-a921ff74fbe1" />
+
