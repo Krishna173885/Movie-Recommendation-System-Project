@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BingeWatch</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- Auto Complete -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/css/autoComplete.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+  <style>
+    .movie-card {
+      margin-bottom: 20px;
+    }
+
+    .movie-card .card {
+      background-color: #333;
+      color: white;
+      border: none;
+      transition: transform 0.2s;
+    }
+
+    .movie-card .card:hover {
+      transform: scale(1.05);
+    }
+
+    .movie-card img {
+      height: 400px;
+      object-fit: cover;
+    }
+
+    .movie-card .card-body {
+      text-align: center;
+    }
+
+    .results {
+      display: none;
+    }
+
+    .footer {
+      margin-top: 50px;
+      padding: 10px;
+      background-color: #222;
+      color: white;
+      text-align: center;
+    }
+
+    /* New CSS for Top 10 Movies Title */
+    .top-movies-title {
+      color: #e50914; /* Netflix red */
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .top-movies-subtitle {
+      color: #ffffff;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: normal;
+      margin-bottom: 20px;
+    }
+
+    /* Footer links */
+    .footer a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #222; /* Dark background color */
+      padding: 10px 0;
+    }
+
+    .navbar .navbar-brand {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .navbar .navbar-nav .nav-link {
+      color: white;
+    }
+
+    .navbar .navbar-nav .nav-link:hover {
+      color: #e50914; /* Netflix red on hover */
+    }
+
+    .navbar .navbar-toggler-icon {
+      color: white;
+    }
+  </style>
+</head>
+
+<body id="content" style="font-family: 'Noto Sans JP', sans-serif;">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="static/Logo.png" alt="Logo" height="30">
+        BingeWatch
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact">Contact Us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="ml-container" style="display: block;">
+    <!-- Logo -->
+    <a target="_blank" class="logo">
+      <img src="static/Logo.png" alt="Logo">
+    </a>
+
+    <center>
+      <h1 style="text-align: center;">
+        <img src="static/Title.png" alt="Title">
+      </h1>
+    </center> 
+    
+    <div class="form-group shadow-textarea" style="margin-top: 30px;text-align: center;color: white;">
+      <input type="text" name="movie" class="movie form-control" id="autoComplete" autocomplete="off" placeholder="Enter the Movie Name" style="background-color: #ffffff;border-color:#ffffff;width: 60%;color: #181818" required="required" />
+      <br>
+    </div>
+
+    <div class="form-group" style="text-align: center;">
+      <button class="btn btn-primary btn-block movie-button" style="background-color: #e50914;text-align: center;border-color: #e50914;width:120px;" disabled="true">Enter</button><br><br>
+    </div>
+  </div>
+
+  <div id="loader" class="text-center"></div>
+
+  <div class="fail">
+    <center><h3>Sorry! The movie you requested is not in our database. 
+    Please check the spelling or try with other movies!</h3></center>
+  </div>
+
+  <div id="top-movies" class="movie-content">
+    <center>
+      <h3 class="top-movies-title">Top 10 Popular Movies by IMDB</h3>
+      <h5 class="top-movies-subtitle">(Click any of the movies to get recommendation)</h5>
+    </center>
+    <div class="row">
+      {% if top_10_movies %}
+        {% for movie in top_10_movies %}
+          <div class="movie-card col-lg-3 col-md-4 col-sm-6" data-title="{{ movie.title }}">
+            <div class="card">
+              <img src="{{ movie.poster }}" class="card-img-top" alt="{{ movie.title }}">
+              <div class="card-body">
+                <h5 class="card-title">{{ movie.title }}</h5>
+                <p class="card-text">IMDb Score: {{ movie.imdb_score }}</p>
+                <button class="btn btn-danger click-me-btn">Click Me</button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No movies available.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="results">
+    <center>
+      <h2 id="name" class="text-uppercase"></h2>
+    </center>
+  </div>
+
+  <div class="footer">
+    BingeWatch | <a href="#" id="home-link">Home</a> | <a href="contact" id="contact-link">Contact Us</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/js/autoComplete.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='autocomplete.js') }}"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='recommend.js') }}"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <script>
+    $(document).ready(function() {
+      // Hide top movies on input in autoComplete
+      $('#autoComplete').on('input', function() {
+        $('#top-movies').hide();
+      });
+
+      // Hide top movies on click of Enter button
+      $('.movie-button').on('click', function() {
+        $('#top-movies').hide();
+      });
+
+      // Autocomplete initialization
+      new autoComplete({
+        data: {
+          src: async function () {
+            const response = await fetch('/autocomplete'); // Adjust endpoint as per Flask route
+            const data = await response.json();
+            return data;
+          },
+          key: ["movie_title"],
+          cache: false
+        },
+        selector: "#autoComplete",
+        threshold: 1,
+        debounce: 300,
+        searchEngine: "strict",
+        resultsList: {
+          render: true,
+          container: source => {
+            source.setAttribute("id", "autoComplete_list");
+          },
+          destination: document.querySelector("#autoComplete"),
+          position: "afterend",
+          element: "ul"
+        },
+        maxResults: 5,
+        highlight: true,
+        resultItem: {
+          content: (data, source) => {
+            source.innerHTML = data.match;
+          },
+          element: "li"
+        },
+        noResults: () => {
+          const result = document.createElement("li");
+          result.setAttribute("class", "no_result");
+          result.setAttribute("tabindex", "1");
+          result.innerHTML = "No Results";
+          document.querySelector("#autoComplete_list").appendChild(result);
+        },
+        onSelection: feedback => {
+          document.getElementById('autoComplete').value = feedback.selection.value;
+          $('#autoComplete_list').empty(); // Clear autocomplete results
+        }
+      });
+
+      // Show top movies when autoComplete input is focused
+      $('#autoComplete').on('focus', function() {
+        $('#top-movies').show();
+      });
+
+      // Event handlers for ensuring top movies are shown on various interactions
+      $(document).on('click', '.autoComplete_result', function() {
+        $('#top-movies').show();
+      });
+
+      // Clear autoComplete results on input blur
+      $('#autoComplete').on('blur', function() {
+        $('#autoComplete_list').empty();
+      });
+
+      // Reload page when Home link is clicked
+      $('#home-link').on('click', function(event) {
+        event.preventDefault(); // Prevent default link behavior
+        location.reload(); // Reload the page
+      });
+
+      // No need for event handler for Contact Us link since it should work with default behavior
+    });
+  </script>
+</body>
+</html>

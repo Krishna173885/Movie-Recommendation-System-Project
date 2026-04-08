@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Us - BingeWatch</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+   
+
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #181818;
+            color: white;
+        }
+
+        .contact-form {
+            background-color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            margin-top: 50px;
+        }
+
+        .contact-form h2 {
+            color: #e50914;
+            margin-bottom: 30px;
+        }
+
+        .form-control {
+            background-color: #555;
+            border: none;
+            color: white;
+        }
+
+        .form-control:focus {
+            background-color: #666;
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #e50914;
+            border-color: #e50914;
+        }
+
+        .btn-primary:hover {
+            background-color: #bf0a10;
+            border-color: #bf0a10;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding: 10px;
+            background-color: #222;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="contact-form">
+                    <h2>Contact Us</h2>
+                    <form id="contactForm" method="POST">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">What can we help you with?</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        BingeWatch | <a href="home" style="color: white; text-decoration: none;">Home</a>
+    </div>
+    <script src="{{ url_for('static', filename='js/recommend.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#contactForm').on('submit', function(event) {
+                event.preventDefault(); // Prevent the form from submitting normally
+
+                // AJAX call to submit the form data to the server
+                $.ajax({
+                    type: 'POST',
+                    url: '/contact', // Flask route where data should be sent
+                    data: $('#contactForm').serialize(), // Serialize the form data
+                    success: function(response) {
+                        alert('Message sent successfully!');
+                        window.location.href = '/home'; // Redirect to the home page after successful submission
+                    },
+                    error: function(error) {
+                        alert('Error sending message. Please try again later.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
