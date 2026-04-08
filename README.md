@@ -37,3 +37,9 @@ A Content-Based Movie Recommender System that suggests movies similar to user pr
 
 ---<img width="1918" height="886" alt="proof" src="https://github.com/user-attachments/assets/70302807-bd5c-428f-9bd6-a921ff74fbe1" />
 
+![UserreviewSentimentanlysis](https://github.com/user-attachments/assets/027d369a-b70f-4037-8bb2-d3c41909c70c)
+![Search](https://github.com/user-attachments/assets/8d0c9131-a11e-42a9-bb9e-8f181ec4245c)
+
+![Search2](https://github.com/user-attachments/assets/26159a4d-50cd-4e8c-90e7-8d259375c1c6)
+
+
